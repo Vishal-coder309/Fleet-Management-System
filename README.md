@@ -377,4 +377,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Built with ❤️ for the future of autonomous drone operations**
 
-For questions, support, or contributions, please reach out to [assignments@flytbase.com](mailto:assignments@flytbase.com)
+For questions, support, or contributions, please reach out to [vishalyadav68948@gmail.com](mailto:vishalyadav68948@gmail.com)
