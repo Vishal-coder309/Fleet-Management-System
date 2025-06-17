@@ -62,7 +62,7 @@ export function AdvancedAnalytics({ stats, missions, drones }: AdvancedAnalytics
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatTime(avgMissionDuration)}</div>
+            <div className="text-2xl font-bold">{formatTime(Number(avgMissionDuration.toFixed(1)))}</div>
             <p className="text-xs text-muted-foreground">Per mission</p>
           </CardContent>
         </Card>

@@ -247,7 +247,7 @@ export function LiveTrackingMap({ missions: initialMissions, drones: initialDron
                             <p>Drone: {mission.drone.name}</p>
                             <p>Progress: {Math.round(mission.progress)}%</p>
                             <p>
-                              Time: {Math.round(mission.elapsed_time)}m / {mission.estimated_duration}m
+                              Time: {mission.progress >= 100 || mission.status === "completed" ? `${Math.round(mission.elapsed_time)}m (Completed)` : `${Math.round(mission.elapsed_time)}m / ${mission.estimated_duration}m`}
                             </p>
                           </div>
 

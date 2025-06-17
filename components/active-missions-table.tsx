@@ -82,8 +82,8 @@ export function ActiveMissionsTable({ missions }: ActiveMissionsTableProps) {
                 </TableCell>
                 <TableCell>
                   <div className="space-y-1">
-                    <Progress value={mission.progress} className="w-16" />
-                    <span className="text-xs text-muted-foreground">{mission.progress}%</span>
+                    <Progress value={Math.min((mission.elapsed_time / mission.estimated_duration) * 100, 100)} className="w-16" />
+                    <span className="text-xs text-muted-foreground">{Math.min((mission.elapsed_time / mission.estimated_duration) * 100, 100).toFixed(0)}%</span>
                   </div>
                 </TableCell>
                 <TableCell>

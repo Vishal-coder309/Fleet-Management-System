@@ -90,7 +90,7 @@ export function MissionMonitoringMap({ missions }: MissionMonitoringMapProps) {
                           <div className="space-y-2">
                             <div className="flex items-center justify-between text-sm">
                               <span>Progress</span>
-                              <span>{mission.progress}%</span>
+                              <span>{mission.progress.toFixed(0)}%</span>
                             </div>
                             <Progress value={mission.progress} />
                           </div>
@@ -104,7 +104,7 @@ export function MissionMonitoringMap({ missions }: MissionMonitoringMapProps) {
                             </div>
                             <div className="flex items-center gap-2">
                               <Battery className="h-4 w-4 text-muted-foreground" />
-                              <span>{mission.drone.battery_level}%</span>
+                              <span>{mission.drone.battery_level.toFixed(0)}%</span>
                             </div>
                           </div>
 

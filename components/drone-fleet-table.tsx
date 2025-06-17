@@ -58,7 +58,7 @@ export function DroneFleetTable({ drones }: DroneFleetTableProps) {
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <Battery className={`h-4 w-4 ${getBatteryColor(drone.battery_level)}`} />
-                    <span className={getBatteryColor(drone.battery_level)}>{drone.battery_level}%</span>
+                    <span className={getBatteryColor(drone.battery_level)}>{drone.battery_level.toFixed(0)}%</span>
                   </div>
                 </TableCell>
                 <TableCell>

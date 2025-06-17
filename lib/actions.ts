@@ -160,7 +160,13 @@ export async function updateMissionStatus(missionId: string, status: Mission["st
       updateData.started_at = new Date()
     } else if (status === "completed" || status === "aborted") {
       updateData.completed_at = new Date()
+    }
 
+    // First update the mission status
+    await db.collection("missions").updateOne({ _id: new ObjectId(missionId) }, { $set: updateData })
+
+    // Then handle post-status-update operations
+    if (status === "completed" || status === "aborted") {
       // Update drone status back to available
       const mission = await db.collection("missions").findOne({ _id: new ObjectId(missionId) })
       if (mission) {
@@ -169,13 +175,9 @@ export async function updateMissionStatus(missionId: string, status: Mission["st
           .updateOne({ _id: mission.drone_id }, { $set: { status: "available", updated_at: new Date() } })
       }
 
-      // Auto-generate survey report for completed missions
-      if (status === "completed") {
-        await createSurveyReport(missionId)
-      }
+      // Auto-generate survey report for completed or aborted missions
+      await createSurveyReport(missionId)
     }
-
-    await db.collection("missions").updateOne({ _id: new ObjectId(missionId) }, { $set: updateData })
 
     revalidatePath("/")
     revalidatePath("/missions")
@@ -305,8 +307,8 @@ export async function createSurveyReport(missionId: string) {
     const db = await getDatabase()
 
     const mission = await db.collection("missions").findOne({ _id: new ObjectId(missionId) })
-    if (!mission || mission.status !== "completed") {
-      throw new Error("Mission not found or not completed")
+    if (!mission || (mission.status !== "completed" && mission.status !== "aborted")) {
+      throw new Error("Mission not found or not completed/aborted")
     }
 
     // Check if report already exists
@@ -330,6 +332,11 @@ export async function createSurveyReport(missionId: string) {
         average_altitude: mission.parameters.altitude,
         max_speed: Math.round(mission.parameters.speed * 1.2 * 100) / 100,
         waypoints_completed: mission.flight_path.length,
+      },
+      data_quality: {
+        image_overlap_percentage: Math.floor(Math.random() * 21) + 80, // 80-100%
+        gps_accuracy: Math.round((Math.random() * 2 + 1) * 10) / 10, // 1.0-3.0
+        sensor_data_points: Math.floor(Math.random() * 1000 + 500), // 500-1500
       },
       created_at: new Date(),
     }
@@ -388,8 +395,8 @@ export async function simulateMissionProgress() {
         await updateDroneLocation(mission.drone_id.toString(), location)
       }
 
-      // Complete mission if progress reaches 100%
-      if (newProgress >= 100) {
+      // Complete mission if progress reaches 100% or elapsed time exceeds estimated duration
+      if (newProgress >= 100 || newElapsedTime >= mission.estimated_duration) {
         await updateMissionStatus(mission._id.toString(), "completed")
       }
     }
